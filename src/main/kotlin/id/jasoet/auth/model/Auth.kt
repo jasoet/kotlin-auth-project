@@ -8,6 +8,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.ManyToMany
 import javax.persistence.Table
+import javax.validation.constraints.NotEmpty
 
 @Entity
 @Table(name = "t_user")
@@ -20,6 +21,7 @@ data class User(
         var bio: String?,
         var active: Boolean,
         @ManyToMany
+        @field:NotEmpty
         var groups: List<Group>,
         @WhenCreated
         @Column(name = "created")

@@ -1,6 +1,7 @@
 package id.jasoet.auth.handler
 
 import id.jasoet.auth.extension.Handler
+import id.jasoet.auth.extension.validate
 import id.jasoet.auth.model.User
 import id.jasoet.auth.model.query.QUser
 import io.ebean.Database
@@ -31,6 +32,7 @@ class UserHandler(private val database: Database) {
 
     val post: Handler = {
         val user = call.receive<User>()
+        user.validate()
 
         database.save(user)
         call.respond(HttpStatusCode.Created)
@@ -53,6 +55,8 @@ class UserHandler(private val database: Database) {
                 active = update.active
                 groups = update.groups
             }
+
+            user.validate()
 
             database.save(user)
 

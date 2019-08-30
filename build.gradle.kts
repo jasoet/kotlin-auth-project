@@ -16,6 +16,10 @@ val ebeanQueryBeanVersion: String = "11.43.2"
 val ebeanQueryGeneratorVersion: String = "11.43.3"
 val jaxbVersion: String = "2.3.1"
 
+val hibernateValidatorVersion: String = "6.0.15.Final"
+val javaxElVersion: String = "3.0.1-b11"
+val javaxElApiVersion: String = "3.0.1-b06"
+
 plugins {
     kotlin("jvm") version "1.3.50"
     kotlin("kapt") version "1.3.50"
@@ -51,6 +55,11 @@ dependencies {
     kapt("io.ebean:kotlin-querybean-generator:$ebeanQueryGeneratorVersion")
     implementation("javax.xml.bind:jaxb-api:$jaxbVersion")
     implementation("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
+
+    implementation("org.hibernate.validator:hibernate-validator:$hibernateValidatorVersion")
+    implementation("org.hibernate.validator:hibernate-validator-annotation-processor:$hibernateValidatorVersion")
+    implementation("org.glassfish:javax.el:$javaxElVersion")
+    implementation("javax.el:javax.el-api:$javaxElApiVersion")
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))

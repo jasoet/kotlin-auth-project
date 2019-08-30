@@ -1,6 +1,7 @@
 package id.jasoet.auth
 
 import com.typesafe.config.Config
+import id.jasoet.auth.feature.registerRedirection
 import id.jasoet.auth.module.dataSourceModule
 import id.jasoet.auth.module.handlerModule
 import id.jasoet.auth.route.user
@@ -8,6 +9,7 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
 import io.ktor.gson.gson
 import io.ktor.response.respond
 import io.ktor.routing.get
@@ -27,6 +29,10 @@ fun Application.mainModule() {
     install(Koin) {
         slf4jLogger()
         modules(listOf(dataSourceModule, handlerModule))
+    }
+
+    install(StatusPages) {
+        registerRedirection()
     }
 
     routing {
