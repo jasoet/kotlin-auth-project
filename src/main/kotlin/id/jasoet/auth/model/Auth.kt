@@ -6,10 +6,11 @@ import java.time.Instant
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.ManyToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "user")
+@Table(name = "t_user")
 data class User(
         @Id
         var id: Long,
@@ -18,6 +19,8 @@ data class User(
         @Column
         var bio: String?,
         var active: Boolean,
+        @ManyToMany
+        var groups: List<Group>,
         @WhenCreated
         @Column(name = "created")
         var whenCreated: Instant,
@@ -26,15 +29,20 @@ data class User(
         var whenModified: Instant
 )
 
-data class UserGroup(
-        var id: Long,
-        var user: User,
-        var group: Group
-)
-
+@Entity
+@Table(name = "t_group")
 data class Group(
+        @Id
         var id: Long,
         var name: String,
+        @Column(length = 600)
         var description: String,
-        var policy: String
+        var policy: String,
+        @WhenCreated
+        @Column(name = "created")
+        var whenCreated: Instant,
+        @WhenModified
+        @Column(name = "modified")
+        var whenModified: Instant
 )
+

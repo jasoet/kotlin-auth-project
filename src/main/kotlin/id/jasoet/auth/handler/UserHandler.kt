@@ -51,6 +51,7 @@ class UserHandler(private val database: Database) {
                 email = update.email
                 bio = update.bio
                 active = update.active
+                groups = update.groups
             }
 
             database.save(user)
