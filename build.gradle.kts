@@ -97,6 +97,22 @@ tasks.test {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+task<JavaExec>("generateMigration") {
+    group = "migration"
+    main = "id.jasoet.auth.migration.GenerateKt"
+    classpath = sourceSets["main"].runtimeClasspath
+    systemProperties = System.getProperties().toMap() as Map<String, Any?>
+}
+
+@Suppress("UNCHECKED_CAST")
+task<JavaExec>("executeMigration") {
+    group = "migration"
+    main = "id.jasoet.auth.migration.ExecuteKt"
+    classpath = sourceSets["main"].runtimeClasspath
+    systemProperties = System.getProperties().toMap() as Map<String, Any?>
+}
+
 tasks.wrapper {
     gradleVersion = "5.6.1"
 }
