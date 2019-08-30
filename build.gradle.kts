@@ -11,9 +11,16 @@ val hikariCpVersion: String = "3.3.1"
 val h2DatabaseVersion: String = "1.4.199"
 val flywayVersion: String = "5.2.4"
 
+val ebeanVersion: String = "11.43.3"
+val ebeanQueryBeanVersion: String = "11.43.2"
+val ebeanQueryGeneratorVersion: String = "11.43.3"
+val jaxbVersion: String = "2.3.1"
+
 plugins {
     kotlin("jvm") version "1.3.50"
+    kotlin("kapt") version "1.3.50"
     id("com.github.johnrengelman.shadow").version("5.1.0")
+    id("io.ebean").version("11.39.1")
 
     application
 }
@@ -38,6 +45,12 @@ dependencies {
     runtime("com.h2database:h2:$h2DatabaseVersion")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("com.zaxxer:HikariCP:$hikariCpVersion")
+
+    implementation("io.ebean:ebean:$ebeanVersion")
+    implementation("io.ebean:ebean-querybean:$ebeanQueryBeanVersion")
+    kapt("io.ebean:kotlin-querybean-generator:$ebeanQueryGeneratorVersion")
+    implementation("javax.xml.bind:jaxb-api:$jaxbVersion")
+    implementation("org.glassfish.jaxb:jaxb-runtime:$jaxbVersion")
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
