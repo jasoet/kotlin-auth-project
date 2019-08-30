@@ -2,6 +2,8 @@ package id.jasoet.auth
 
 import com.typesafe.config.Config
 import id.jasoet.auth.module.dataSourceModule
+import id.jasoet.auth.module.handlerModule
+import id.jasoet.auth.route.user
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -24,8 +26,7 @@ fun Application.mainModule() {
 
     install(Koin) {
         slf4jLogger()
-
-        modules(dataSourceModule)
+        modules(listOf(dataSourceModule, handlerModule))
     }
 
     routing {
@@ -39,6 +40,7 @@ fun Application.mainModule() {
             )
             call.respond(response)
         }
+        user()
     }
 
 }
