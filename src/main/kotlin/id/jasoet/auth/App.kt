@@ -1,45 +1,44 @@
 package id.jasoet.auth
 
+import com.typesafe.config.Config
+import id.jasoet.auth.module.dataSourceModule
+import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.gson.gson
-import io.ktor.http.ContentType
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.koin.Logger.slf4jLogger
+import org.koin.ktor.ext.Koin
+import org.koin.ktor.ext.get
+import javax.sql.DataSource
 
-object App {
-    val greeting: String
-        get() {
-            return "Hello world."
-        }
-}
-
-data class Hello(val from: String, val to: String)
-
-fun main(args: Array<String>) {
-    val server = embeddedServer(Netty, port = 8080) {
-        install(ContentNegotiation) {
-            gson {
-                setPrettyPrinting()
-            }
-        }
-        routing {
-            get("/") {
-                call.respondText(App.greeting, ContentType.Text.Plain)
-            }
-
-            get("/hello") {
-                val name = call.parameters["name"] ?: "Jasoet"
-                val respond = Hello(from = name, to = "The World!")
-                call.respond(respond)
-            }
+fun Application.mainModule() {
+    install(ContentNegotiation) {
+        gson {
+            setPrettyPrinting()
         }
     }
 
-    server.start(wait = false)
+    install(Koin) {
+        slf4jLogger()
+
+        modules(dataSourceModule)
+    }
+
+    routing {
+        val database = get<DataSource>()
+        val config = get<Config>()
+        get("/") {
+            val response = mapOf(
+                    "greeting" to "Ktor with Database and Koin",
+                    "database_url" to config.getString("dataSource.url"),
+                    "connection_ready" to !database.connection.isClosed
+            )
+            call.respond(response)
+        }
+    }
+
 }

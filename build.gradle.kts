@@ -6,8 +6,14 @@ val kotlinVersion: String = "1.3.50"
 val logbackVersion: String = "1.2.3"
 val jUnitVersion = "5.4.2"
 
+val koinVersion: String = "2.0.1"
+val hikariCpVersion: String = "3.3.1"
+val h2DatabaseVersion: String = "1.4.199"
+val flywayVersion: String = "5.2.4"
+
 plugins {
     kotlin("jvm") version "1.3.50"
+    id("com.github.johnrengelman.shadow").version("5.1.0")
 
     application
 }
@@ -25,6 +31,14 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-gson:$ktorVersion")
 
+    implementation("org.koin:koin-core:$koinVersion")
+    implementation("org.koin:koin-ktor:$koinVersion")
+    implementation("org.koin:koin-logger-slf4j:$koinVersion")
+
+    runtime("com.h2database:h2:$h2DatabaseVersion")
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("com.zaxxer:HikariCP:$hikariCpVersion")
+
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
 
@@ -33,8 +47,16 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
+val ktorEngineName: String = "io.ktor.server.netty.EngineMain"
+
 application {
-    mainClassName = "id.jasoet.auth.AppKt"
+    mainClassName = ktorEngineName
+}
+
+tasks.shadowJar {
+    manifest {
+        attributes("Main-Class" to ktorEngineName)
+    }
 }
 
 tasks.withType<KotlinCompile> {
