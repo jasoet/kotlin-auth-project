@@ -8,6 +8,11 @@ import id.jasoet.auth.route.user
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.UserIdPrincipal
+import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
+import io.ktor.auth.basic
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.gson.gson
@@ -35,17 +40,36 @@ fun Application.mainModule() {
         registerRedirection()
     }
 
+    install(Authentication) {
+        basic(name = "basic") {
+            realm = "Ktor Server"
+            validate { credentials ->
+                if (credentials.name == credentials.password) {
+                    //TODO Implement AuthenticationService and use here
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+        }
+    }
+
     routing {
         val database = get<DataSource>()
         val config = get<Config>()
-        get("/") {
-            val response = mapOf(
-                    "greeting" to "Ktor with Database and Koin",
-                    "database_url" to config.getString("dataSource.url"),
-                    "connection_ready" to !database.connection.isClosed
-            )
-            call.respond(response)
+        authenticate("basic") {
+            get("/") {
+                val principal = call.authentication.principal<UserIdPrincipal>()
+                val response = mapOf(
+                        "greeting" to "Ktor with Database and Koin",
+                        "from" to (principal?.name ?: "None"),
+                        "database_url" to config.getString("dataSource.url"),
+                        "connection_ready" to !database.connection.isClosed
+                )
+                call.respond(response)
+            }
         }
+
         user()
     }
 
